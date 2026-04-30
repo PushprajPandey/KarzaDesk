@@ -89,21 +89,6 @@ NEXT_PUBLIC_API_URL=http://localhost:8080
 
 ---
 
-## Login Credentials
-
-Run `npm run seed` inside the backend directory before using these.
-
-| Role         | Email              | Password     | Dashboard Access         |
-| ------------ | ------------------ | ------------ | ------------------------ |
-| Admin        | admin@lms.com      | Admin@123    | All modules              |
-| Sales        | sales@lms.com      | Sales@123    | Sales module only        |
-| Sanction     | sanction@lms.com   | Sanction@123 | Sanction module only     |
-| Disbursement | disburse@lms.com   | Disburse@123 | Disbursement module only |
-| Collection   | collection@lms.com | Collect@123  | Collection module only   |
-| Borrower     | borrower@lms.com   | Borrower@123 | Borrower portal only     |
-
----
-
 ## End-to-End Flow
 
 ### Borrower Journey
