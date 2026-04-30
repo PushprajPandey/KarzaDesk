@@ -2,12 +2,11 @@
   "name": "karzadesk-backend",
   "version": "1.0.0",
   "private": true,
-  "main": "api/index.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "node api/index.js"
+    "start": "node index.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
+    "express": "^4.19.2"
   }
 }
