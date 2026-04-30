@@ -34,6 +34,15 @@ export const errorHandler = (
     return;
   }
 
+  // CORS errors (thrown by the cors middleware)
+  if (err instanceof Error && err.message === "Not allowed by CORS") {
+    res.status(403).json({
+      success: false,
+      message: "CORS: origin not allowed",
+    });
+    return;
+  }
+
   // Handle specific error types
   if (err instanceof Error) {
     // MongoDB/Mongoose errors
