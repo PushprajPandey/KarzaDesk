@@ -114,24 +114,34 @@ const start = async (): Promise<void> => {
 };
 
 // Export app for Vercel
-export default async (req: any, res: any) => {
+const vercelHandler = async (req: any, res: any) => {
   await connectDB();
   return app(req, res);
 };
 
-// Only start server if not in Vercel environment
+export default vercelHandler;
+
+// Ensure CommonJS default export is a function for @vercel/node
+// (Vercel's Node runtime expects `module.exports = (req, res) => ...`)
+module.exports = vercelHandler;
+
+// Global error handlers
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception:", error);
+  if (!process.env.VERCEL) {
+    process.exit(1);
+  }
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  if (!process.env.VERCEL) {
+    process.exit(1);
+  }
+});
+
+// Only start server for local development
 if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
-  // Global error handlers
-  process.on("uncaughtException", (error) => {
-    console.error("Uncaught Exception:", error);
-    process.exit(1);
-  });
-
-  process.on("unhandledRejection", (reason, promise) => {
-    console.error("Unhandled Rejection at:", promise, "reason:", reason);
-    process.exit(1);
-  });
-
   process.on("SIGTERM", () => {
     console.log("SIGTERM received, shutting down gracefully");
     process.exit(0);
