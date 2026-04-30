@@ -123,14 +123,49 @@ export const uploadSalarySlip = async (
       return;
     }
 
-    const salarySlipUrl = `/uploads/${file.filename}`;
-    app.salarySlipUrl = salarySlipUrl;
+    // Persist upload in MongoDB (Vercel serverless filesystem is not reliable for uploads).
+    app.salarySlipData = file.buffer;
+    app.salarySlipMime = file.mimetype;
+    app.salarySlipUrl = `/api/borrower/salary-slip`;
     app.salarySlipOriginalName = file.originalname;
 
     const saved = await app.save();
     res.status(200).json({ success: true, data: saved.toJSON() });
   } catch {
     res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const getSalarySlip = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const auth = requiredUser(req);
+    if (!auth) {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
+
+    // We must explicitly select salarySlipData because it is excluded by default.
+    const app = await Application.findOne({ userId: auth.userId }).select(
+      '+salarySlipData +salarySlipMime salarySlipOriginalName',
+    );
+    if (!app) {
+      res.status(404).json({ success: false, message: 'Application not found' });
+      return;
+    }
+
+    if (!app.salarySlipData || app.salarySlipData.length === 0) {
+      res.status(404).json({ success: false, message: 'Salary slip not uploaded' });
+      return;
+    }
+
+    const mime = app.salarySlipMime || 'application/octet-stream';
+    const name = app.salarySlipOriginalName || 'salary-slip';
+
+    res.setHeader('Content-Type', mime);
+    res.setHeader('Content-Disposition', `inline; filename="${String(name).replace(/\"/g, '')}"`);
+    res.status(200).send(app.salarySlipData);
+  } catch {
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
 
