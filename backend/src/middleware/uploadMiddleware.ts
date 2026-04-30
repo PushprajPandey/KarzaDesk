@@ -1,36 +1,14 @@
 import type { Request, RequestHandler } from 'express'
-import fs from 'fs'
 import multer from 'multer'
 import type { FileFilterCallback } from 'multer'
-import path from 'path'
-import { sanitizeFilename } from '@/utils/sanitize'
+// NOTE:
+// This project is deployed to Vercel as a serverless function.
+// Writing uploads to the local filesystem (e.g. process.cwd()) will fail or be non-persistent.
+// Use memory storage and persist the file elsewhere (we store it in MongoDB in borrowerController).
 
-const ensureUploadsDir = (): string => {
-  const dir = path.join(process.cwd(), 'uploads')
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
-  return dir
-}
+const allowedMime = new Set(['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'])
 
-const allowedMime = new Set(['application/pdf', 'image/jpeg', 'image/png'])
-
-const storage = multer.diskStorage({
-  destination: (_req: Request, _file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-    try {
-      const dir = ensureUploadsDir()
-      cb(null, dir)
-    } catch (e) {
-      const err = e instanceof Error ? e : new Error('Failed to create uploads directory')
-      cb(err, path.join(process.cwd(), 'uploads'))
-    }
-  },
-  filename: (_req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
-    const ext = path.extname(file.originalname)
-    const base = sanitizeFilename(path.basename(file.originalname, ext))
-    cb(null, `${base}_${Date.now()}${ext}`)
-  }
-})
+const storage = multer.memoryStorage()
 
 const uploader = multer({
   storage,
