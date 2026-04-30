@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts",
     "build": "tsc && tsc-alias",
+    "vercel-build": "npm run build",
     "start": "node dist/server.js",
     "seed": "ts-node -r tsconfig-paths/register src/seeds/seedRoles.ts",
     "cleanup-users": "ts-node -r tsconfig-paths/register src/utils/deleteUsers.ts",
