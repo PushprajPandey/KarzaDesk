@@ -152,16 +152,7 @@ export default function AdminPage(): JSX.Element {
         </div>
       )}
 
-      {/* Test Connection Button */}
-      <div className="flex justify-end">
-        <button
-          onClick={testConnection}
-          className="bg-secondary text-on-secondary px-3 py-2 rounded-lg font-label-sm text-label-sm hover:bg-secondary/90 transition-colors shadow-sm flex items-center gap-2"
-        >
-          <span className="material-symbols-outlined text-sm">wifi</span>
-          Test Connection
-        </button>
-      </div>
+      
 
       {/* Users Section */}
       <section>
