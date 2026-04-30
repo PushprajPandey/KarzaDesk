@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #00685f;
+  --secondary: #712ae2;
+  --primary-container: #008378;
+  --secondary-container: #8a4cfc;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-surface text-on-surface font-sans;
+}
