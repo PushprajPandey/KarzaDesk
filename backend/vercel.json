@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "regions": ["iad1"],
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    { "src": "/api/health", "dest": "/api/health.js" },
+    { "src": "/api/(.*)", "dest": "/api/index.js" },
+    { "src": "/api", "dest": "/api/index.js" }
+  ]
+}
