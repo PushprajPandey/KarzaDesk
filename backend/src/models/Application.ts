@@ -10,6 +10,8 @@ export type ApplicationDoc = {
   employmentMode: EmploymentMode
   salarySlipUrl: string
   salarySlipOriginalName: string
+  salarySlipMime?: string
+  salarySlipData?: Buffer
   status: ApplicationStatus
   rejectionReason?: string
   createdAt: Date
@@ -29,6 +31,8 @@ const applicationSchema = new Schema<ApplicationDoc>(
     employmentMode: { type: String, required: true, enum: employmentValues },
     salarySlipUrl: { type: String, required: true, default: '' },
     salarySlipOriginalName: { type: String, required: true, default: '' },
+    salarySlipMime: { type: String, required: false, default: '', select: false },
+    salarySlipData: { type: Buffer, required: false, select: false },
     status: { type: String, required: true, enum: statusValues, default: 'incomplete' },
     rejectionReason: { type: String, required: false }
   },
@@ -39,6 +43,8 @@ const applicationSchema = new Schema<ApplicationDoc>(
       transform: (_doc, ret) => {
         const out = ret as unknown as Record<string, unknown>
         delete out.__v
+        delete out.salarySlipData
+        delete out.salarySlipMime
         return out
       }
     }
